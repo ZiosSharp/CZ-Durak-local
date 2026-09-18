@@ -1,3 +1,5 @@
+https://ziossharp.github.io/CZ-Durak-local/
+
 # CZ-Durak-local
 
 **Текущая базовая версия:** `CZ Durak local_47n`

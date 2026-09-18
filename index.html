@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CZ Durak local_47n</title>
+<style>
+  :root{
+    --table:#5c341d; --table-dark:#26150c; --panel:rgba(72,42,24,.42); --text:#f6f6f6;
+    --accent:#e6d8ae; --shadow:0 10px 24px rgba(0,0,0,.32); --page-bg-image:radial-gradient(circle at 30% 26%, #eadbc0 0%, #d3b186 34%, #b17d56 68%, #8e6140 100%); --button-bg-image:none;
+    --card-w:78px; --card-h:112px; --red:#d81f1f; --black:#111; --blue-back:#4966d6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background-image:linear-gradient(rgba(18,10,7,.12), rgba(18,10,7,.12)), var(--page-bg-image);background-size:cover,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;background-attachment:fixed,fixed;min-height:100vh}
+  .wrap{max-width:1280px;margin:0 auto;padding:18px 18px 30px;position:relative}
+  h1{margin:8px 0 12px;text-align:center;font-size:30px}
+  .settings{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:end;background:linear-gradient(180deg, rgba(255,246,228,.06), rgba(54,31,18,.08)), rgba(54,31,18,.42);padding:16px 18px;border-radius:16px;margin-bottom:14px;border:1px solid rgba(255,228,188,.08);backdrop-filter:blur(1.2px)}
+  .setting{display:flex;flex-direction:column;gap:6px}
+  .setting label{font-size:15px;color:#ecf6ec}
+  select,button,textarea,input{border:none;border-radius:10px;padding:12px 16px;font-size:18px;cursor:pointer;box-shadow:var(--shadow)}
+  textarea,input{cursor:text}
+  .topbar{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+  .btn-main{background:transparent;color:#efe7d6}
+  .btn-next{background:transparent;color:#174f2d}
+  .btn-newgame{background:transparent;color:#fff3ec}
+  .btn-open{background:transparent;color:#8b6500}
+  .btn-log{background:transparent;color:#e4f0ff}
+  .btn-draw{background:#d7cf5a;color:#111; min-width:260px}
+  .btn-draw[disabled], button[disabled]{opacity:.62; cursor:not-allowed}
+  .btn-next[disabled]{opacity:.72; filter:grayscale(.18);}
+  .btn-draw:not([disabled]){filter:brightness(1.02);text-shadow:none}
+  .btn-bg{background:transparent;color:#3e2a1a;padding:9px 12px;font-size:16px;min-width:82px}
+
+  .btn-main,.btn-open,.btn-log,.btn-debug,.btn-draw,.btn-bg,.picker-inline button,.round-end button,.history-box button{
+    background-color:#d7be9a;
+    background-image:linear-gradient(180deg, rgba(255,250,240,.26), rgba(72,43,25,.16)), var(--button-bg-image);
+    background-size:100% 100%,100% 100%;
+    background-position:center,center;
+    background-repeat:no-repeat,no-repeat;
+    border:1px solid rgba(255,241,221,.54);
+    text-shadow:0 1px 0 rgba(255,255,255,.30);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.38), inset 0 -2px 4px rgba(75,42,22,.16), 0 8px 18px rgba(0,0,0,.20);
+  }
+  .btn-next,.btn-open,.btn-newgame,.btn-log,.btn-debug,.btn-bg,.btn-draw{font-weight:700}
+  .btn-next{border-color:rgba(127,212,151,.66); box-shadow:inset 0 1px 0 rgba(255,255,255,.38), inset 0 -2px 4px rgba(75,42,22,.16), 0 0 0 1px rgba(127,212,151,.26), 0 8px 18px rgba(0,0,0,.20)}
+  .btn-open{border-color:rgba(239,214,108,.70); box-shadow:inset 0 1px 0 rgba(255,255,255,.38), inset 0 -2px 4px rgba(75,42,22,.16), 0 0 0 1px rgba(239,214,108,.22), 0 8px 18px rgba(0,0,0,.20)}
+  .btn-newgame{border-color:rgba(235,154,154,.72); box-shadow:inset 0 1px 0 rgba(255,255,255,.32), inset 0 -2px 4px rgba(95,32,24,.18), 0 0 0 1px rgba(235,154,154,.24), 0 8px 18px rgba(0,0,0,.22)}
+  .btn-log,.btn-bg{border-color:rgba(196,224,255,.72); box-shadow:inset 0 1px 0 rgba(255,255,255,.38), inset 0 -2px 4px rgba(75,42,22,.16), 0 0 0 1px rgba(196,224,255,.24), 0 8px 18px rgba(0,0,0,.20)}
+  .btn-draw{border-color:rgba(228,208,112,.72)}
+  .btn-main:hover,.btn-open:hover,.btn-log,.btn-debug:hover,.btn-draw:hover,.btn-bg:hover,.picker-inline button:hover,.round-end button:hover,.history-box button:hover{transform:translateY(-1px); filter:brightness(1.02)}
+  .scoreboard{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+  .score-card{background:linear-gradient(180deg, rgba(255,247,230,.07), rgba(61,34,19,.10)), rgba(61,34,19,.42);border-radius:16px;padding:14px 18px;box-shadow:var(--shadow);min-height:110px;border:1px solid rgba(255,228,188,.08);backdrop-filter:blur(1px)}
+  .score-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .score-head h3{margin:0;font-size:32px;line-height:1}
+  .count-badge{background:rgba(255,255,255,.16);padding:8px 12px;border-radius:999px;font-size:24px;font-weight:700;min-width:96px;text-align:center}
+  .score-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;font-size:24px;line-height:1.2}
+  .score-grid .label{font-weight:700;color:#e8f5e9}
+  .score-grid .value{font-weight:700}
+  .layout{display:grid;grid-template-columns: 1fr 420px 1fr;grid-template-areas:"enemy enemy enemy" "deck center pile" "status status status" "picker picker picker" "player player player";gap:18px;align-items:center}
+  .enemy-box,.player-box{justify-self:center;width:min(1020px, 100%);background:linear-gradient(180deg, rgba(255,248,235,.05), rgba(46,26,15,.08)), var(--panel);border-radius:20px;padding:16px 22px;border:1px solid rgba(255,228,188,.08);backdrop-filter:blur(1px)}
+  .enemy-box{grid-area:enemy;min-height:150px}
+  .player-box{grid-area:player;min-height:180px}
+  .name-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:20px;font-weight:700}
+  .cards-row{display:flex;gap:0;min-height:126px;align-items:flex-end;justify-content:center;flex-wrap:nowrap}
+  .cards-row.enemy .card-slot{margin-left:-18px}
+  .cards-row.player .card-slot{margin-left:-10px}
+  .cards-row .card-slot:first-child{margin-left:0}
+  .center-deck{grid-area:deck;justify-self:end;display:flex;gap:24px;align-items:center}
+  .pile-box{grid-area:pile;justify-self:start;min-width:330px;min-height:170px;display:flex;align-items:center;justify-content:flex-start}
+  .status{grid-area:status;justify-self:center;width:min(1020px, 100%);text-align:center;background:linear-gradient(180deg, rgba(244,229,199,.94), rgba(220,200,160,.94));color:#111;padding:14px 20px;border-radius:12px;font-size:20px;box-shadow:var(--shadow);text-align:center}
+  .status .sub{display:block;margin-top:8px;font-size:18px;color:#4a3f18;font-weight:700;white-space:pre-line}
+  .picker-inline{grid-area:picker;justify-self:center;display:none;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;width:min(960px, 100%);background:rgba(255,255,255,.08);border-radius:14px;padding:12px}
+  .picker-inline.show{display:flex;position:relative;z-index:5}
+  .picker-inline .picker-title{font-size:20px;margin-right:10px}
+  .picker-inline button{background:#d7cf5a;color:#111}
+  .deck-stack{position:relative;width:520px;height:170px}
+  .stack-count{text-align:center;margin-top:8px;font-size:20px;color:#eef5ee;font-weight:700}
+  .pile-stack{position:relative;width:330px;height:170px}
+  .pile-stack .card{position:absolute;left:0;top:0}
+  .card-slot{position:relative}
+  .card{width:var(--card-w);height:var(--card-h);border-radius:7px;background:#fff;color:#111;border:1px solid rgba(0,0,0,.28);position:relative;box-shadow:0 6px 12px rgba(0,0,0,.28);overflow:hidden;user-select:none}
+  .card.faceup.playable{cursor:pointer;transition:transform .12s ease, box-shadow .12s ease}
+  .card.faceup.playable:hover{transform:translateY(-10px);box-shadow:0 12px 18px rgba(0,0,0,.34)}
+  .card.dragging{outline:3px solid #f3e08d; transform:translateY(-8px)}
+  .card.swap-highlight{outline:4px solid #ffe36a; box-shadow:0 0 0 3px rgba(255,227,106,.25), 0 0 24px rgba(255,227,106,.95), 0 6px 12px rgba(0,0,0,.28)}
+  .card.back{background:
+      linear-gradient(135deg, rgba(255,255,255,.18) 25%, transparent 25%) -8px 0/16px 16px,
+      linear-gradient(225deg, rgba(255,255,255,.18) 25%, transparent 25%) -8px 0/16px 16px,
+      linear-gradient(315deg, rgba(255,255,255,.18) 25%, transparent 25%) 0px 0/16px 16px,
+      linear-gradient(45deg, rgba(255,255,255,.18) 25%, transparent 25%) 0px 0/16px 16px,
+      var(--blue-back)}
+  .card.back::before{content:"";position:absolute;inset:8px;border:2px solid rgba(255,255,255,.88);border-radius:5px}
+  .card.back::after{content:"◈";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:30px;opacity:.9}
+  .corner{position:absolute;left:6px;top:5px;line-height:.95;text-align:center;font-weight:700}
+  .corner.bottom{left:auto;top:auto;right:6px;bottom:5px;transform:rotate(180deg)}
+  .rank{font-size:22px}.suit{font-size:20px}
+  .center-symbol{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:46px;font-weight:700}
+  .red{color:#d81f1f}.black{color:#111}
+  .small-note{text-align:center;margin-top:12px}
+  .legend{display:flex;justify-content:center;gap:14px;margin-top:8px;flex-wrap:wrap;color:#edf4ed;font-size:16px}
+  .netpanel{margin-top:16px;background:linear-gradient(180deg, rgba(255,247,231,.05), rgba(52,29,17,.10)), rgba(52,29,17,.42);padding:14px 16px;border-radius:16px;border:1px solid rgba(255,228,188,.08);backdrop-filter:blur(1px)}
+  .netpanel details summary{cursor:pointer;font-weight:700}
+  .netgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  .netlog{white-space:pre-wrap;background:rgba(0,0,0,.22);padding:12px;border-radius:12px;font-family:Consolas,monospace;font-size:13px;max-height:220px;overflow:auto}
+  .server-row{display:grid;grid-template-columns:180px 1fr 140px auto;gap:8px;align-items:center;margin:10px 0 12px}
+  .server-row select,.server-row input{min-width:0}
+  .subpanel{margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px}
+
+  .round-end{position:fixed;right:18px;bottom:18px;background:rgba(7,20,12,.96);color:#fff;padding:16px 18px;border-radius:16px;box-shadow:0 14px 28px rgba(0,0,0,.45);width:min(420px, calc(100vw - 36px));display:none;z-index:30}
+  .round-end.show{display:block}
+  .round-end h4{margin:0 0 10px;font-size:28px}
+  .round-end .lines{white-space:pre-line;font-size:18px;line-height:1.45}
+  .round-end .actions{text-align:right;margin-top:12px}
+  .round-end button{background:#f3e08d;color:#111;border:none;border-radius:10px;padding:10px 14px;font-size:18px;cursor:pointer}
+  .history-box{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(7,20,12,.98);color:#fff;padding:16px 18px;border-radius:16px;box-shadow:0 14px 28px rgba(0,0,0,.45);display:none;z-index:1001;max-width:min(980px, calc(100vw - 36px));width:min(980px, calc(100vw - 36px));pointer-events:auto}
+  .history-box.show{display:block}
+  .history-box h4{margin:0 0 10px;font-size:28px}
+  .history-box .lines{white-space:pre-wrap;font-size:18px;line-height:1.45;max-height:60vh;overflow:auto;font-family:Consolas,monospace}
+  .history-box .actions{text-align:right;margin-top:12px}
+  .history-box button{background:#f3e08d;color:#111;border:none;border-radius:10px;padding:10px 14px;font-size:18px;cursor:pointer}
+
+  .layout{position:relative}
+  .layout > *{position:relative;z-index:1}
+.table-watermark{position:absolute;left:0;right:0;top:72px;bottom:360px;display:flex;align-items:center;justify-content:center;transform:translateX(26px);pointer-events:none;user-select:none;z-index:0;color:rgba(244,223,198,.56);text-transform:uppercase;font-family:Georgia,'Times New Roman',serif;filter:drop-shadow(0 2px 1px rgba(255,240,220,.18))}
+  .table-watermark .wm-101-wrap{display:flex;align-items:center;gap:26px;font-size:clamp(70px,8.4vw,118px);font-weight:900;letter-spacing:.02em}
+  .table-watermark .wm-101{line-height:1;color:rgba(248,231,208,.27);text-shadow:0 1px 0 rgba(255,248,235,.55),0 -1px 0 rgba(78,47,28,.72),0 2px 0 rgba(118,82,58,.28),0 8px 18px rgba(44,22,11,.42)}
+  .table-watermark .wm-line{width:110px;height:3px;background:linear-gradient(90deg, rgba(244,223,198,.0), rgba(244,223,198,.72), rgba(244,223,198,.0));box-shadow:0 1px 0 rgba(255,246,230,.18),0 3px 8px rgba(26,12,7,.25);border-radius:999px}
+  .table-watermark .wm-bridge{font-size:clamp(68px,8.2vw,112px);font-weight:900;letter-spacing:.018em;line-height:.92;color:rgba(248,231,208,.27);text-shadow:0 1px 0 rgba(255,248,235,.56),0 -1px 0 rgba(78,47,28,.74),0 2px 0 rgba(118,82,58,.28),0 9px 20px rgba(44,22,11,.44)}
+
+
+
+  .credit-signature{position:absolute;right:20px;top:14px;color:rgba(255,248,235,.94);font-size:18px;font-weight:700;letter-spacing:.02em;text-shadow:0 1px 0 rgba(0,0,0,.55),0 0 8px rgba(0,0,0,.28);z-index:5;pointer-events:none}
+
+  .chance-panel{position:absolute;left:50%;top:39%;transform:translate(-50%,-50%);z-index:4;display:none;min-width:470px;max-width:min(980px,94vw);padding:9px 13px;border-radius:16px;background:rgba(28,17,11,.46);border:1px solid rgba(255,238,200,.22);box-shadow:0 10px 24px rgba(0,0,0,.25);backdrop-filter:blur(1.2px);pointer-events:none;text-align:left}
+  .chance-panel.show{display:block}
+  .chance-title{font-size:18px;font-weight:900;color:#fff4d8;text-shadow:0 1px 2px rgba(0,0,0,.7);margin:0 0 6px;text-align:center}
+  .chance-any{margin-left:14px;color:#f8e28c;font-weight:900}
+  .chance-outs{margin-left:8px;color:#e8d6a6;font-size:14px;font-weight:800;opacity:.95}
+  .chance-cards{display:flex;gap:7px;justify-content:flex-start;align-items:flex-end;flex-wrap:wrap}
+  .chance-item{width:44px;text-align:center}
+  .chance-prob{display:none}
+  .chance-mini-card{width:42px;height:55px;border-radius:6px;background:#fff;color:#111;border:1px solid rgba(0,0,0,.34);box-shadow:0 3px 8px rgba(0,0,0,.30);position:relative;margin:0;font-weight:900;font-family:Arial,Helvetica,sans-serif;flex:0 0 auto}
+  .chance-mini-card .ct{position:absolute;left:50%;top:3px;transform:translateX(-50%);font-size:18px;line-height:.95;letter-spacing:-1.4px;white-space:nowrap;text-align:center}
+  .chance-mini-card .cp{position:absolute;left:50%;bottom:3px;transform:translateX(-50%);min-width:25px;padding:1px 5px;border-radius:999px;background:rgba(50,34,15,.88);color:#ffe789;font-size:16px;font-weight:900;line-height:1.05;text-align:center;text-shadow:0 1px 1px rgba(0,0,0,.65)}
+  .chance-mini-card.red{color:#d81f1f}
+  .chance-mini-card.black{color:#111}
+  .chance-summary-card{background:linear-gradient(180deg,#fffaf0,#efd8a6);border-color:rgba(255,229,127,.88);box-shadow:0 0 0 2px rgba(255,226,94,.16),0 3px 8px rgba(0,0,0,.30)}
+  .chance-summary-card .ct{font-size:25px;letter-spacing:-1px}
+  .chance-summary-card .cp{font-size:18px;bottom:4px}
+  .chance-empty{font-size:15px;color:#f3ead7;font-weight:700;opacity:.88;text-align:center}
+
+  .chance-panel{top:39%;min-width:470px;max-width:min(1040px,94vw);padding:9px 13px}
+  .chance-groups{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+  .chance-group{display:flex;gap:7px;align-items:center;justify-content:flex-start;flex-wrap:nowrap}
+  .chance-group-head{display:none}
+  .chance-group-cards{display:flex;gap:5px;align-items:center;justify-content:flex-start;flex-wrap:wrap;max-width:900px}
+  .chance-mini-card{width:38px;height:50px}
+  .chance-mini-card .ct{font-size:18px;top:3px}
+  .chance-mini-card .cp{display:block}
+  @media (max-width:760px){.chance-panel{top:38%;min-width:320px}.chance-group{flex-wrap:wrap}.chance-group-cards{justify-content:flex-start}.chance-mini-card{width:36px;height:48px}.chance-summary-card .ct{font-size:23px}}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="credit-signature">by LAMM_-*-_VURDALAK</div>
+  <h1>CZ Durak local_47n</h1>
+
+  <div class="settings">
+    <div class="setting">
+      <label for="drawRule">Запрет добора при числе ходов</label>
+      <select id="drawRule">
+        <option value="2">2 карты</option>
+        <option value="1">1 карта</option>
+      </select>
+    </div>
+    <div class="setting">
+      <label for="starterRule">Кто ходит первым в новом сете</label>
+      <select id="starterRule">
+        <option value="fixed_enemy">Заданный: соперник</option>
+        <option value="fixed_player">Заданный: вы</option>
+        <option value="random">Случайно</option>
+        <option value="winner" selected>Победитель прошлого сета</option>
+        <option value="loser">Проигравший прошлого сета</option>
+      </select>
+    </div>
+    <div class="setting">
+      <label for="deckMode">Что делать с пустой колодой</label>
+      <select id="deckMode">
+        <option value="shuffle">Перемешать сброс</option>
+        <option value="flip">Просто перевернуть сброс</option>
+      </select>
+    </div>
+    <div class="setting">
+      <label for="gameVariant">Версия игры</label>
+      <select id="gameVariant">
+        <option value="101" selected>101</option>
+        <option value="bridge">Бридж</option>
+      </select>
+    </div>
+    <div class="setting">
+      <label for="botLevel">Уровень бота</label>
+      <select id="botLevel">
+        <option value="easy">Easy</option>
+        <option value="normal" selected>Normal</option>
+        <option value="smart">Smart</option>
+        <option value="pro">Pro</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="btn-main btn-next" id="nextSetBtn" type="button">NEXT SET</button>
+    <button class="btn-main btn-newgame" id="newGameBtn" type="button">NEW GAME</button>
+    <button class="btn-log" id="toggleLogBtn" type="button">LOG OFF</button>
+    <button class="btn-log" id="connectFolderBtn" type="button">Folder</button>
+    <button class="btn-log" id="historyBtn" type="button">History</button>
+    <button class="btn-debug" id="toggleDebugBtn" type="button">DEBUG OFF</button>
+    <button class="btn-log" id="rulesBtn" type="button">Rules</button>
+    <button class="btn-bg" id="bgCycleBtn" type="button">BG</button>
+    <button class="btn-bg" id="chanceBtn" type="button">Chance</button>
+  </div>
+
+  <div class="scoreboard">
+    <div class="score-card">
+      <div class="score-head"><h3>Вы</h3><div id="playerCountTop" class="count-badge">—</div></div>
+      <div class="score-grid">
+        <div class="label">Общий счёт</div><div class="value" id="playerTotalValue">0</div>
+        <div class="label">Раунд</div><div class="value" id="playerRoundValue">—</div>
+        <div class="label">Ход</div><div class="value" id="playerTurnValue">—</div>
+      </div>
+    </div>
+    <div class="score-card">
+      <div class="score-head"><h3>Соперник</h3><div id="enemyCountTop" class="count-badge">—</div></div>
+      <div class="score-grid">
+        <div class="label">Общий счёт</div><div class="value" id="enemyTotalValue">0</div>
+        <div class="label">Раунд</div><div class="value" id="enemyRoundValue">—</div>
+        <div class="label">Ход</div><div class="value" id="enemyTurnValue">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div id="variantWatermark" class="table-watermark" aria-hidden="true">101</div>
+    <div id="chancePanel" class="chance-panel" aria-live="polite"></div>
+    <div class="enemy-box">
+      <div class="name-row">
+        <div>Соперник</div>
+        <div id="enemyCount"></div>
+      </div>
+      <div class="cards-row enemy" id="enemyRow"></div>
+    </div>
+
+    <div class="center-deck">
+      <div>
+        <div class="deck-stack" id="deckStack"></div>
+        <div class="stack-count" id="deckCount"></div>
+      </div>
+    </div>
+
+    <div class="pile-box">
+      <div class="pile-stack" id="pileStack"></div>
+    </div>
+
+    <div class="status">
+      <span id="statusMain">Нажмите NEW GAME или NEXT SET</span>
+      <span class="sub" id="statusSub"></span>
+    </div>
+
+    <div class="picker-inline" id="pickerInline">
+      <div class="picker-title">Выберите масть:</div>
+      <button data-suit="clubs">Трефы ♣</button>
+      <button data-suit="diamonds">Бубны ♦</button>
+      <button data-suit="hearts">Червы ♥</button>
+      <button data-suit="spades">Пики ♠</button>
+    </div>
+
+    <div class="player-box">
+      <div class="name-row">
+        <div>Вы</div>
+        <div id="playerCount"></div>
+      </div>
+      <div class="cards-row player" id="playerRow"></div>
+      <div class="small-note">
+        <button class="btn-draw" id="drawBtn">Взять из колоды</button>
+      </div>
+      <div class="legend"><div>Для удобства ваши карты можно менять местами, перетаскивая мышью</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="round-end" id="roundEndBox">
+  <h4 id="roundEndTitle">Сет завершён</h4>
+  <div class="lines" id="roundEndLines"></div>
+  <div class="actions"><button id="closeRoundEndBtn" type="button">Закрыть</button></div>
+</div>
+
+<div class="history-box" id="historyPanel">
+  <h4>History</h4>
+  <div class="lines" id="historyLines"></div>
+  <div class="actions"><button id="closeHistoryBtn" type="button">Закрыть</button></div>
+</div>
+
+
+<div class="history-box" id="rulesPanel">
+  <h4>Rules</h4>
+  <div class="lines" id="rulesLines"></div>
+  <div class="actions"><button id="closeRulesBtn" type="button">Закрыть</button></div>
+</div>
+
+<script>
+function $(id){ return document.getElementById(id); }
+const APP_VERSION = 'CZ Durak local_47n';
+const AI_DELAY_MS = 900;
+const RULES_TEXT = `В Чешского дурака играют два игрока. Смысл игры - сбросить все карты с рук и посчитать по очкам оставшиеся карты у противника. Проигравшим считается игрок, первым набравший больше 101 очков.
+Игроки по-очереди делают ходы, сбрасывая карты в стопку на игровом столе. Первый ходит любой картой, следующий должен положить карту той же масти или того же достоинства, что и карта, лежащая сверху стопки. Например, если на столе лежит Валет пик, то на него можно сбросить, либо Валета, либо любую карту масти пик (либо Даму любой масти. см. ниже). Если нечем ходить, набираются карты из колоды до тех пор, пока не выпадет нужная карта.
+Когда карты в колоде заканчиваются, то сброшенные карты, кроме последней, переворачиваются, перемешиваются и кладутся на место колоды (тем самым из колоды опять можно добирать карты)
+Здесь два варианта игры Чешский дурак: «101» и «Бридж». (вариант игры выбирает хост)
+В зависимости от того, какую карту сбрывает игрок, для его соперника наступают различные последствия:
+Вариант игры «101»:
+· шестёрка – соперник берёт одну карту из колоды и пропускает ход
+· семёрка – берёт две карты и пропускает ход
+· Король червей – берёт четыре карты и пропускает ход
+· Туз – соперник пропускает ход
+· Дама – назначает масть
+
+Вариант игры «Бридж»:
+· шестёрка – берёт четыре карты из колоды и пропускает ход
+· семёрка – берёт две карты и НЕ пропускает ход
+· туз – соперник пропускает ход
+· Дама – назначает масть
+
+Даму любой масти можно выкладывать на любую карту, при этом игрок, выложивший Даму, заказывает масть, с которой должен зайти соперник (появляется окно с выбором масти).
+
+Подсчёт очков
+Когда у кого-то из игроков заканчиваются карты, значит соперник проиграл раунд и его карты пересчитываются:
+· Валет – 2 очка
+· Дама – 3 очка
+· Король – 4 очка
+· Туз – 11 очков
+· остальные карты по цифровому номиналу. (например шестёрка это 6 очков)
+
+Если один игрок сбросил все карты, а у соперника на руках осталась всего одна карта Дама (кроме Дамы пик), то прибавляется 20 очков к счёту соперника.
+Если на руках осталась всего одна карта Дама пик, то прибавляется 40 очков.
+Если игрок закончил раунд картой Дама (кроме Дамы пик), то с его счёта списывается 20 очков (минус 20).
+Если игрок закончил раунд на Даму пик, то с его счёта списывается 40 очков (минус 40).
+
+Тот, кто выиграл раунд (сет), тот ходит в следующем раунде первым (зависит от настроек на хосте).
+Игрок, первым набравший больше 101 очков, считается проигравшим.
+Важный бонус: У игрока, набравшего 101 очко ровно, все очки обнуляются (в ноль) и игра продолжается.`;
+const LIMIT_SCORE = 101;
+const suits = [
+  { key: 'clubs', symbol: '♣', color: 'black', label: 'Трефы' },
+  { key: 'diamonds', symbol: '♦', color: 'red', label: 'Бубны' },
+  { key: 'hearts', symbol: '♥', color: 'red', label: 'Червы' },
+  { key: 'spades', symbol: '♠', color: 'black', label: 'Пики' }
+];
+const ranks = ['6','7','8','9','10','J','Q','K','A'];
+const EMBEDDED_BG_FILES = Array.from({length:44}, (_,i)=>`bg${i+1}.jpg`);
+const state = {
+  rules: { handSize: 5, drawDisabledAtPlayableCount: 2, starterRule: 'winner', deckMode: 'shuffle', gameVariant: '101', botLevel: 'normal' },
+  deck: [], playerHand: [], enemyHand: [], pile: [],
+  forcedSuit: null, pendingSuitChoice: false,
+  turn: null, gameStarted: false, roundEnded: false, aiBusy: false, matchOver: false, playerActionBusy: false,
+  scores: { player: 0, enemy: 0 },
+  lastRoundPoints: { player: null, enemy: null },
+  lastRoundWinner: null, lastRoundLoser: null,
+  dragIndex: null,
+  currentRunActor: null, currentRunCards: [],
+  loggingEnabled: false,
+  debugEnabled: false,
+  history: { startedAt: localDateTime(), events: [], sets: [], debug: [], archivedGames: [], currentGameSets: [] },
+  pendingRoundEvents: [], pendingRoundDebug: [],
+  dirHandle: null,
+  sessionStamp: localStamp(),
+  bgFiles: [], bgIndex: 0, bgName: '',
+  chanceModeHost: 'off', chanceHostView: null, chancePreviewHostCard: null, chancePreviewHostSuit: null,
+  chanceMemory: { seenCards: [], deductions: [], deckReturned: false, flipOrderKnown: false },
+  playerModel: { voidSuits: {}, voidRanks: {}, confidenceEvents: [] }
+};
+
+function pad2(n){ return String(n).padStart(2, '0'); }
+function localDateTime(date = new Date()){
+  return `${date.getFullYear()}-${pad2(date.getMonth()+1)}-${pad2(date.getDate())} ${pad2(date.getHours())}:${pad2(date.getMinutes())}:${pad2(date.getSeconds())}`;
+}
+function suitInfo(key){ return suits.find(s => s.key === key); }
+function cardText(card){ return `${card.rank}${suitInfo(card.suit).symbol}`; }
+function lastPileCard(){ return state.pile.length ? state.pile[state.pile.length - 1] : null; }
+function delay(ms){ return new Promise(resolve => setTimeout(resolve, ms)); }
+function logTime(){ return new Date().toLocaleTimeString('ru-RU', {hour:'2-digit', minute:'2-digit', second:'2-digit'}); }
+function localStamp(){
+  const d = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}-${pad(d.getSeconds())}`;
+}
+function logEvent(type, text){
+  state.pendingRoundEvents.push({time: logTime(), type, text});
+}
+function dbgSnapshot(){
+  return {
+    turn: state.turn,
+    aiBusy: state.aiBusy,
+    roundEnded: state.roundEnded,
+    pendingSuitChoice: state.pendingSuitChoice,
+    forcedSuit: state.forcedSuit || '-',
+    deck: state.deck.length,
+    pileTop: state.pile.length ? cardText(state.pile[state.pile.length - 1]) : '-',
+    pileSize: state.pile.length,
+    playerHand: state.playerHand.length,
+    enemyHand: state.enemyHand.length,
+    playerVoidSuits: Object.keys(state.playerModel?.voidSuits || {}).join(',') || '-',
+    playerVoidRanks: Object.keys(state.playerModel?.voidRanks || {}).join(',') || '-'
+  };
+}
+function dbg(type, text, extra=null){
+  if (!state.debugEnabled) return;
+  const snap = dbgSnapshot();
+  const payload = {time: logTime(), type, text, snap, extra};
+  state.pendingRoundDebug.push(payload);
+}
+function archiveCurrentGameIfNeeded(){
+  const cur = state.history.currentGameSets || [];
+  if (cur.length){
+    state.history.archivedGames = state.history.archivedGames || [];
+    state.history.archivedGames.push(cur.slice());
+    state.history.currentGameSets = [];
+  }
+}
+function logSetSummary(text, setData=null){
+  state.history.sets.push(`${logTime()}  ${text}`);
+  if (setData){
+    state.history.currentGameSets = state.history.currentGameSets || [];
+    state.history.currentGameSets.push(setData);
+  }
+  if (state.loggingEnabled) saveLogToDisk();
+}
+function buildScoreHistory(){
+  const games = [...(state.history.archivedGames || [])];
+  if ((state.history.currentGameSets || []).length) games.push(state.history.currentGameSets);
+  const lines = [];
+  lines.push(APP_VERSION || 'CZ Durak local_47n');
+  lines.push(`Старт сессии: ${state.history.startedAt}`);
+  lines.push('');
+  if (!games.length){
+    lines.push('Пока нет завершённых сетов и игр.');
+  } else {
+    games.forEach((sets, gameIdx) => {
+      const firstSet = sets[0] || {};
+      const variantLabel = firstSet.gameVariant === 'bridge' ? 'Bridge' : '101';
+      lines.push(`Игра ${gameIdx + 1} — ${variantLabel}`);
+      lines.push(`       Вы | Соперник`);
+      lines.push(`       -------------`);
+      sets.forEach((item, idx) => {
+        const left = String(item.player).padStart(5, ' ');
+        const right = String(item.enemy).padStart(9, ' ');
+        const mark = item.matchOver ? '  матч завершён' : '';
+        lines.push(`${String(idx + 1).padStart(2, ' ')}. ${left} | ${right}${mark}`);
+      });
+      lines.push('');
+    });
+  }
+  const stats = games.reduce((acc, sets) => {
+    if (!sets || !sets.length) return acc;
+    const finished = [...sets].reverse().find(item => item.matchOver);
+    const last = sets[sets.length - 1];
+    if (finished){
+      if (finished.player > LIMIT_SCORE) acc.finished.enemy += 1;
+      else if (finished.enemy > LIMIT_SCORE) acc.finished.player += 1;
+      acc.finished.playerPoints += Number(finished.player || 0);
+      acc.finished.enemyPoints += Number(finished.enemy || 0);
+    } else if (last){
+      acc.unfinished.count += 1;
+      acc.unfinished.playerPoints += Number(last.player || 0);
+      acc.unfinished.enemyPoints += Number(last.enemy || 0);
+      if ((last.player || 0) < (last.enemy || 0)) acc.unfinished.player += 1;
+      else if ((last.enemy || 0) < (last.player || 0)) acc.unfinished.enemy += 1;
+      else acc.unfinished.draw += 1;
+    }
+    return acc;
+  }, {finished:{player:0, enemy:0, playerPoints:0, enemyPoints:0}, unfinished:{count:0, player:0, enemy:0, draw:0, playerPoints:0, enemyPoints:0}});
+  const diff = Math.abs(stats.finished.playerPoints - stats.finished.enemyPoints);
+  lines.push(`Общий счёт по завершённым играм — Вы: ${stats.finished.player} (${stats.finished.playerPoints}), Соперник: ${stats.finished.enemy} (${stats.finished.enemyPoints}), Разница: ${diff}.`);
+  if (stats.unfinished.count){
+    lines.push(`Незавершённые игры — всего: ${stats.unfinished.count}. Условно по очкам — Вы: ${stats.unfinished.player}, Соперник: ${stats.unfinished.enemy}, Ничьи: ${stats.unfinished.draw}.`);
+    lines.push(`Очки в незавершённых играх — Вы: ${stats.unfinished.playerPoints}, Соперник: ${stats.unfinished.enemyPoints}.`);
+  }
+  lines.push(`Текущий общий счёт — Вы: ${state.scores.player}, соперник: ${state.scores.enemy}.`);
+  if (state.matchOver){
+    lines.push(`Матч завершён. Проиграл: ${state.scores.player > LIMIT_SCORE ? 'Вы' : 'соперник'}.`);
+  }
+  return lines.join('\n');
+}
+function historyText(){ return buildScoreHistory(); }
+async function saveLogToDisk(){
+  if (!state.dirHandle || !(state.loggingEnabled || state.debugEnabled)) return;
+  try{
+    const sub = await state.dirHandle.getDirectoryHandle('1', {create: true});
+    const stamp = state.sessionStamp;
+    if (state.loggingEnabled){
+      const gameHandle = await sub.getFileHandle(`CZ_Durak_${stamp}_game.txt`, {create: true});
+      const gameWritable = await gameHandle.createWritable();
+      const gameLines = [
+        `Старт сессии: ${state.history.startedAt}`,
+        '',
+        'Сеты:',
+        ...(state.history.sets.length ? state.history.sets : ['пока нет']),
+        '',
+        'События:',
+        ...(state.history.events.length ? state.history.events.map(e => `${e.time}  [${e.type}] ${e.text}`) : ['пока нет'])
+      ];
+      await gameWritable.write(gameLines.join('\n'));
+      await gameWritable.close();
+    }
+    if (state.debugEnabled){
+      const debugHandle = await sub.getFileHandle(`CZ_Durak_${stamp}_debug.txt`, {create: true});
+      const debugWritable = await debugHandle.createWritable();
+      const debugLines = state.history.debug.length ? state.history.debug.slice(-500).map(e => {
+        const s = e.snap;
+        const extra = e.extra ? ` | extra=${JSON.stringify(e.extra)}` : '';
+        return `${e.time}  [${e.type}] ${e.text} | turn=${s.turn} aiBusy=${s.aiBusy} roundEnded=${s.roundEnded} pendingSuitChoice=${s.pendingSuitChoice} forcedSuit=${s.forcedSuit} deck=${s.deck} pileTop=${s.pileTop} pileSize=${s.pileSize} playerHand=${s.playerHand} enemyHand=${s.enemyHand} playerVoidSuits=${s.playerVoidSuits} playerVoidRanks=${s.playerVoidRanks}${extra}`;
+      }) : ['debug выключен'];
+      await debugWritable.write(debugLines.join('\n'));
+      await debugWritable.close();
+    }
+  }catch(e){
+    console.log('log write skipped', e);
+  }
+}
+async function chooseLogFolder(){
+  if (!window.showDirectoryPicker){
+    setStatus('Браузер не поддерживает прямую запись в папку.', 'Историю можно открыть кнопкой История.');
+    return;
+  }
+  try{
+    state.dirHandle = await window.showDirectoryPicker();
+    state.history.events.push({time: logTime(), type: 'system', text: 'Подключена папка логов.'});
+    if (state.debugEnabled) {
+      const snap = dbgSnapshot();
+      state.history.debug.push({time: logTime(), type: 'system', text: 'Подключена папка логов.', snap, extra: null});
+    }
+    await saveLogToDisk();
+    setStatus('Папка логов подключена.', 'В подпапке 1 будут создаваться отдельные файлы game и debug.');
+  }catch(e){
+    setStatus('Подключение папки логов отменено.', '');
+  }
+}
+function toggleLogging(){
+  state.loggingEnabled = !state.loggingEnabled;
+  const btn = document.getElementById('toggleLogBtn');
+  if (btn) btn.textContent = state.loggingEnabled ? 'ЛОГ ON' : 'ЛОГ OFF';
+  state.history.events.push({time: logTime(), type: 'system', text: `Лог ${state.loggingEnabled ? 'включён' : 'выключен'}.`});
+  if (state.debugEnabled) {
+    const snap = dbgSnapshot();
+    state.history.debug.push({time: logTime(), type: 'system', text: `Игровой лог ${state.loggingEnabled ? 'включён' : 'выключен'}.`, snap, extra: null});
+  }
+  if (state.loggingEnabled || state.debugEnabled) saveLogToDisk();
+}
+function toggleDebug(){
+  state.debugEnabled = !state.debugEnabled;
+  const btn = document.getElementById('toggleDebugBtn');
+  if (btn) btn.textContent = state.debugEnabled ? 'DEBUG ON' : 'DEBUG OFF';
+  if (state.debugEnabled) {
+    const snap = dbgSnapshot();
+    state.history.debug.push({time: logTime(), type: 'system', text: 'Debug включён.', snap, extra: null});
+  }
+  if (state.loggingEnabled || state.debugEnabled) saveLogToDisk();
+}
+function showHistory(){
+  document.getElementById('historyLines').textContent = historyText();
+  document.getElementById('historyPanel').classList.add('show');
+}
+function hideHistory(){ document.getElementById('historyPanel').classList.remove('show'); }
+function forcedSuitText(){ return state.forcedSuit ? `Заказана масть: ${suitInfo(state.forcedSuit).label}.` : ''; }
+function setStatus(main, sub=''){
+  document.getElementById('statusMain').textContent = main;
+  const parts = [];
+  if (sub) parts.push(sub);
+  const forcedLine = state.forcedSuit ? `Заказана масть: ${suitInfo(state.forcedSuit).label}.` : '';
+  if (forcedLine && !(main || '').includes(forcedLine) && !(sub || '').includes(forcedLine)) parts.push(forcedLine);
+  document.getElementById('statusSub').textContent = parts.join('\n');
+}
+function shuffle(arr){ const copy=[...arr]; for(let i=copy.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [copy[i],copy[j]]=[copy[j],copy[i]]; } return copy; }
+function reverseCopy(arr){ return [...arr].reverse(); }
+function makeDeck(){ const deck=[]; for(const suit of suits){ for(const rank of ranks){ deck.push({suit:suit.key, rank}); } } return shuffle(deck); }
+function readSettings(){
+  state.rules.drawDisabledAtPlayableCount = Number(document.getElementById('drawRule').value);
+  state.rules.starterRule = document.getElementById('starterRule').value;
+  state.rules.deckMode = document.getElementById('deckMode').value;
+  const gv = document.getElementById('gameVariant'); if (gv) state.rules.gameVariant = gv.value;
+  const bl = document.getElementById('botLevel'); if (bl) state.rules.botLevel = bl.value;
+}
+function determineStarter(){
+  const rule = state.rules.starterRule;
+  if (rule === 'fixed_enemy') return 'enemy';
+  if (rule === 'fixed_player') return 'player';
+  if (rule === 'random') return Math.random() < 0.5 ? 'player' : 'enemy';
+  if (rule === 'winner') return state.lastRoundWinner || 'player';
+  if (rule === 'loser') return state.lastRoundLoser || 'player';
+  return 'enemy';
+}
+function resetScores(){
+  archiveCurrentGameIfNeeded();
+  state.scores.player = 0; state.scores.enemy = 0;
+  state.lastRoundPoints.player = null; state.lastRoundPoints.enemy = null;
+  state.matchOver = false;
+}
+function startSet(resetAll=false){
+  readSettings();
+  if (resetAll) resetScores();
+  if (state.matchOver && !resetAll) { setStatus('Матч уже завершён.', 'Используйте NEW GAME.'); render(); return; }
+
+  state.deck = makeDeck(); state.playerHand = []; state.enemyHand = []; state.pile = [];
+  state.forcedSuit = null; state.pendingSuitChoice = false; state.gameStarted = true;
+  state.roundEnded = false; state.aiBusy = false; state.dragIndex = null; hideRoundEnd();
+  state.currentRunActor = null; state.currentRunCards = [];
+  state.pendingRoundEvents = []; state.pendingRoundDebug = [];
+  state.chancePreviewHostCard = null; state.chancePreviewHostSuit = null; state.chanceMemory = { seenCards: [], deductions: [], deckReturned: false, flipOrderKnown: false };
+  state.playerModel = { voidSuits: {}, voidRanks: {}, confidenceEvents: [] };
+
+  for (let i=0;i<state.rules.handSize;i++){ state.playerHand.push(state.deck.pop()); state.enemyHand.push(state.deck.pop()); }
+  if (checkFourQueensRule()) return;
+
+  const opener = determineStarter(); state.turn = opener;
+  setStatus('Новый сет.', opener === 'player' ? 'Первый ход ваш. Можно ходить любой картой.' : 'Первый ход соперника. Он может ходить любой картой.');
+  logEvent('set', `Старт нового сета. Первый ход: ${opener === 'player' ? 'игрок' : 'соперник'}.`);
+  dbg('set_start', `Новый сет. starter=${opener}`);
+  render();
+  if (opener === 'enemy') runEnemyTurn();
+}
+function canPlayOnTop(card, topCard, forcedSuit){
+  if (!topCard) return true;
+  if (card.rank === 'Q') return true;
+  if (forcedSuit) return card.rank === 'Q' || card.suit === forcedSuit;
+  return card.suit === topCard.suit || card.rank === topCard.rank;
+}
+function getPlayableCards(hand){
+  const top = lastPileCard();
+  return hand.filter(card => canPlayOnTop(card, top, state.forcedSuit));
+}
+function shouldEnableDraw(hand){
+  if (state.roundEnded || !state.gameStarted) return false;
+  return getPlayableCards(hand).length < state.rules.drawDisabledAtPlayableCount;
+}
+function drawOneTo(hand){ if (state.deck.length === 0) return null; const card = state.deck.pop(); hand.push(card); return card; }
+function rebuildDeckFromPile(){
+  if (state.pile.length <= 1) return false;
+  const lastTableCard = lastPileCard();
+  const rest = state.pile.slice(0, -1);
+  state.deck = state.rules.deckMode === 'flip' ? reverseCopy(rest) : shuffle(rest);
+  state.pile = [lastTableCard];
+  state.currentRunActor = null;
+  state.currentRunCards = [lastTableCard];
+  state.chanceMemory.deckReturned = true;
+  state.chanceMemory.flipOrderKnown = state.rules.deckMode === 'flip';
+  logEvent('deck', `Колода восстановлена. Режим: ${state.rules.deckMode}. Верхняя карта: ${cardText(lastTableCard)}.`);
+  dbg('rebuild_deck', `rebuild mode=${state.rules.deckMode}`, {oldPile: rest.map(cardText), kept: cardText(lastTableCard), newDeckHead: state.deck.slice(-5).map(cardText)});
+  setStatus('Колода была восстановлена из сброса.', `${state.rules.deckMode === 'flip' ? 'Сброс перевёрнут.' : 'Сброс перемешан.'} На столе оставлена ${cardText(lastTableCard)}.`);
+  render();
+  return true;
+}
+function ensureDeckAvailable(){ if (state.deck.length > 0) return true; return rebuildDeckFromPile(); }
+function autoRebuildDeckIfEmpty(){
+  if (state.roundEnded) return false;
+  if (state.deck.length === 0 && state.pile.length > 1){
+    return rebuildDeckFromPile();
+  }
+  return false;
+}
+function getCardPoints(card){ if (card.rank === 'J') return 2; if (card.rank === 'Q') return 3; if (card.rank === 'K') return 4; if (card.rank === 'A') return 11; return Number(card.rank); }
+function computeHandPenalty(hand){ if (hand.length === 1 && hand[0].rank === 'Q') return hand[0].suit === 'spades' ? 40 : 20; return hand.reduce((sum, card) => sum + getCardPoints(card), 0); }
+function finishBonusForWinningCard(card){ if (!card || card.rank !== 'Q') return 0; return card.suit === 'spades' ? -40 : -20; }
+function apply101Reset(total){ return total === LIMIT_SCORE ? 0 : total; }
+function specialEffect(card){
+  const mode = state.rules.gameVariant || '101';
+  if (mode === 'bridge'){
+    if (card.rank === '6') return { draw: 4, priority: 100, skip: true };
+    if (card.rank === '7') return { draw: 2, priority: 80, skip: false };
+    if (card.rank === 'A') return { draw: 0, priority: 90, skip: true };
+    return null;
+  }
+  if (card.rank === '6') return { draw: 1, priority: 90, skip: true };
+  if (card.rank === '7') return { draw: 2, priority: 100, skip: true };
+  if (card.rank === 'A') return { draw: 0, priority: 95, skip: true };
+  if (card.rank === 'K' && card.suit === 'hearts') return { draw: 4, priority: 110, skip: true };
+  return null;
+}
+
+async function resolveWinningCardEffect(card, winner) {
+  const effect = specialEffect(card); if (!effect) return;
+  const targetHand = winner === 'player' ? state.enemyHand : state.playerHand;
+  const targetText = winner === 'player' ? 'Соперник' : 'Вы';
+  if (effect.draw > 0){
+    setStatus(`Последняя карта победителя: ${cardText(card)}.`, `${targetText} ещё добирает ${effect.draw} карт перед подсчётом.`);
+    render();
+    for (let i=0;i<effect.draw;i++){
+      await delay(AI_DELAY_MS);
+      if (!ensureDeckAvailable()) break;
+      const c = drawOneTo(targetHand); if (!c) break;
+      logEvent('draw', `${targetText} добрал ${cardText(c)} из-за последней карты ${cardText(card)}.`);
+      autoRebuildDeckIfEmpty();
+      if (checkFourQueensRule()) return;
+      setStatus(`Последняя карта победителя: ${cardText(card)}.`, `${targetText} добрал ${i+1} из ${effect.draw}.`);
+      render();
+    }
+  }
+}
+
+function hasFourQueens(hand){
+  return hand.length === 4 && hand.every(c => c && c.rank === 'Q');
+}
+async function finishRoundFourQueens(winner){
+  if (state.roundEnded) return true;
+  state.roundEnded = true; state.turn = null; state.pendingSuitChoice = false; state.aiBusy = false;
+  const playerRound = winner === 'player' ? 0 : 102;
+  const enemyRound = winner === 'enemy' ? 0 : 102;
+  state.scores.player += playerRound;
+  state.scores.enemy += enemyRound;
+  state.lastRoundPoints.player = playerRound;
+  state.lastRoundPoints.enemy = enemyRound;
+  state.lastRoundWinner = winner;
+  state.lastRoundLoser = winner === 'player' ? 'enemy' : 'player';
+  const matchLoser = state.scores.player > LIMIT_SCORE ? 'player' : (state.scores.enemy > LIMIT_SCORE ? 'enemy' : null);
+  state.matchOver = !!matchLoser;
+  const who = winner === 'player' ? 'Вы' : 'Соперник';
+  const loserText = winner === 'player' ? 'сопернику' : 'вам';
+  const lines = [
+    `${who} собрали четыре дамы.`,
+    `Сет завершён специальным правилом: ${loserText} записано +102.`,
+    `Очки за сет — Вы: ${playerRound >= 0 ? '+' : ''}${playerRound}, он: ${enemyRound >= 0 ? '+' : ''}${enemyRound}.`,
+    `Общий счёт — Вы: ${state.scores.player}, он: ${state.scores.enemy}.`
+  ];
+  if (matchLoser) lines.push(`Матч завершён. Проиграл: ${matchLoser === 'player' ? 'Вы' : 'он'}.`);
+  logEvent('round_finish', `${who} собрали четыре дамы. ${loserText} +102.`);
+  logSetSummary(lines.join(' | '), {player: state.scores.player, enemy: state.scores.enemy, playerRound, enemyRound, winner, matchOver: !!matchLoser, gameVariant: state.rules.gameVariant, special: 'four_queens'});
+  if (state.loggingEnabled || state.debugEnabled) saveLogToDisk();
+  const finalMain = matchLoser
+    ? (matchLoser === 'player' ? 'Вы проиграли матч.' : 'Вы выиграли матч.')
+    : (winner === 'player' ? 'Вы выиграли сет: четыре дамы.' : 'Вы проиграли сет: у соперника четыре дамы.');
+  const finalSub = matchLoser ? 'Матч завершён. Используйте NEW GAME.' : 'NEXT SET — новый сет. NEW GAME — новая игра с нулевым счётом.';
+  setStatus(finalMain, finalSub);
+  showRoundEnd(matchLoser ? 'Матч завершён' : 'Сет завершён', lines.join('\n'));
+  render();
+  return true;
+}
+function checkFourQueensRule(){
+  if (state.roundEnded || !state.gameStarted) return false;
+  if (hasFourQueens(state.playerHand)) { finishRoundFourQueens('player'); return true; }
+  if (hasFourQueens(state.enemyHand)) { finishRoundFourQueens('enemy'); return true; }
+  return false;
+}
+async function finishRound(winner, winningCard){
+  if (state.roundEnded) return;
+  state.roundEnded = true; state.turn = null; state.pendingSuitChoice = false; state.aiBusy = true;
+  await resolveWinningCardEffect(winningCard, winner);
+
+  const playerRound = winner === 'player' ? finishBonusForWinningCard(winningCard) : computeHandPenalty(state.playerHand);
+  const enemyRound = winner === 'enemy' ? finishBonusForWinningCard(winningCard) : computeHandPenalty(state.enemyHand);
+
+  state.scores.player += playerRound; state.scores.enemy += enemyRound;
+  const playerReset = state.scores.player === LIMIT_SCORE; const enemyReset = state.scores.enemy === LIMIT_SCORE;
+  state.scores.player = apply101Reset(state.scores.player); state.scores.enemy = apply101Reset(state.scores.enemy);
+  state.lastRoundPoints.player = playerRound; state.lastRoundPoints.enemy = enemyRound;
+  state.lastRoundWinner = winner; state.lastRoundLoser = winner === 'player' ? 'enemy' : 'player';
+  state.aiBusy = false;
+
+  const matchLoser = state.scores.player > LIMIT_SCORE ? 'player' : (state.scores.enemy > LIMIT_SCORE ? 'enemy' : null);
+  state.matchOver = !!matchLoser;
+
+  const lines = [
+    `Победитель сета: ${winner === 'player' ? 'Вы' : 'он'}.`,
+    `Очки за сет — Вы: ${playerRound >= 0 ? '+' : ''}${playerRound}, он: ${enemyRound >= 0 ? '+' : ''}${enemyRound}.`,
+    `Общий счёт — Вы: ${state.scores.player}, он: ${state.scores.enemy}.`
+  ];
+  if (playerReset) lines.push('У вас сработало правило 101 → 0.');
+  if (enemyReset) lines.push('У соперника сработало правило 101 → 0.');
+  if (matchLoser) lines.push(`Матч завершён. Проиграл: ${matchLoser === 'player' ? 'Вы' : 'он'}.`);
+
+  if (state.debugEnabled) {
+    const snap = dbgSnapshot();
+    state.pendingRoundDebug.push({time: logTime(), type: 'round_finish', text: matchLoser ? 'Матч завершён' : 'Сет завершён', snap, extra: {winner, playerRound, enemyRound, totalPlayer: state.scores.player, totalEnemy: state.scores.enemy}});
+  }
+  state.history.events.push(...state.pendingRoundEvents);
+  state.pendingRoundEvents = [];
+  state.history.debug.push(...state.pendingRoundDebug);
+  state.pendingRoundDebug = [];
+  logSetSummary(lines.join(' | '), {player: state.scores.player, enemy: state.scores.enemy, playerRound, enemyRound, winner, matchOver: !!matchLoser, gameVariant: state.rules.gameVariant});
+  if (state.loggingEnabled || state.debugEnabled) saveLogToDisk();
+  const finalMain = matchLoser
+    ? (matchLoser === 'player' ? 'Вы проиграли матч.' : 'Вы выиграли матч.')
+    : (winner === 'player' ? 'Вы выиграли сет.' : 'Вы проиграли сет.');
+  const finalSub = matchLoser
+    ? 'Матч завершён. Используйте NEW GAME.'
+    : 'NEXT SET — новый сет. NEW GAME — новая игра с нулевым счётом.';
+  setStatus(finalMain, finalSub);
+  showRoundEnd(matchLoser ? 'Матч завершён' : 'Сет завершён', lines.join('\n'));
+  render();
+}
+function checkRoundEnd(lastCard){
+  if (checkFourQueensRule()) return true;
+  if (state.playerHand.length === 0) { finishRound('player', lastCard); return true; }
+  if (state.enemyHand.length === 0) { finishRound('enemy', lastCard); return true; }
+  return false;
+}
+async function applySpecial(card, actor){
+  const effect = specialEffect(card); if (!effect) return false;
+  const targetHand = actor === 'player' ? state.enemyHand : state.playerHand;
+  const actorText = actor === 'player' ? 'Вы' : 'Соперник';
+  const targetText = actor === 'player' ? 'Соперник' : 'Вы';
+
+  state.aiBusy = true;
+  if (effect.draw > 0){
+    setStatus(`${actorText} походил ${cardText(card)}.`, `${targetText} добирает ${effect.draw} карт.`);
+    render();
+    for (let i=0;i<effect.draw;i++){
+      await delay(AI_DELAY_MS);
+      if (!ensureDeckAvailable()) break;
+      const c = drawOneTo(targetHand); if (!c) break;
+      logEvent('draw', `${targetText} добрал ${cardText(c)} из-за карты ${cardText(card)}.`);
+      autoRebuildDeckIfEmpty();
+      if (checkFourQueensRule()) return true;
+      setStatus(`${actorText} походил ${cardText(card)}.`, `${targetText} добрал ${i+1} из ${effect.draw}.`);
+      render();
+    }
+  }
+
+  state.forcedSuit = null;
+
+  if (effect.skip) {
+    if (actor === 'player'){
+      state.turn = 'player';
+      setStatus(`${actorText} походил ${cardText(card)}.`, 'Соперник пропускает ход. Ваш ход снова.');
+    } else {
+      state.turn = 'enemy';
+      setStatus(`${actorText} походил ${cardText(card)}.`, 'Вы пропускаете ход. Соперник ходит снова.');
+    }
+  } else {
+    if (actor === 'player'){
+      state.turn = 'enemy';
+      setStatus(`${actorText} походил ${cardText(card)}.`, 'Ход соперника.');
+    } else {
+      state.turn = 'player';
+      setStatus(`${actorText} походил ${cardText(card)}.`, 'Ваш ход.');
+    }
+  }
+  autoRebuildDeckIfEmpty();
+  dbg('special_resolved', `Спецэффект карты ${cardText(card)} завершён`, {actor, effect});
+  state.aiBusy = false;
+  render();
+  if (actor === "player" && state.turn === "enemy" && !state.roundEnded && !state.pendingSuitChoice) {
+    setTimeout(() => runEnemyTurn(), 0);
+  }
+  return true;
+}
+function suitChainScoreForEnemy(suitKey){
+  const hand = state.enemyHand.slice();
+  const playable = hand.filter(c => c.rank === 'Q' || c.suit === suitKey);
+  let bestChain = 0;
+  for (const c of playable){
+    const chain = buildLongestChainFrom(c, hand);
+    if (chain.length > bestChain) bestChain = chain.length;
+  }
+  const suitCount = hand.filter(c => c.suit === suitKey).length;
+  const finishBonus = bestChain >= hand.length ? 10000 : 0;
+  return finishBonus + bestChain * 180 + suitCount * 40;
+}
+function chooseEnemySuit(){
+  let best = 'clubs', bestScore = -Infinity;
+  for (const s of suits){
+    const score = suitChainScoreForEnemy(s.key) + (state.playerModel.voidSuits[s.key] || 0) * 260;
+    if (score > bestScore){ bestScore = score; best = s.key; }
+  }
+  return best;
+}
+function buildGreedyChainFrom(card, hand){
+  const unused = hand.filter(c => c !== card);
+  const chain = [card];
+  let cur = card;
+  while (unused.length){
+    let bestIdx = -1, bestScore = -Infinity;
+    for (let i=0;i<unused.length;i++){
+      const next = unused[i];
+      if (next.rank !== cur.rank && next.suit !== cur.suit) continue;
+      const future = unused.filter((c, j) => j !== i && (c.rank === next.rank || c.suit === next.suit)).length;
+      let score = future * 10 + (next.rank === 'Q' ? -8 : 0) + getCardPoints(next) * 0.05;
+      if (score > bestScore){ bestScore = score; bestIdx = i; }
+    }
+    if (bestIdx < 0) break;
+    cur = unused.splice(bestIdx,1)[0];
+    chain.push(cur);
+    if (chain.length > 18) break;
+  }
+  return chain;
+}
+function buildLongestChainFrom(card, hand, budgetObj=null){
+  if (!card) return [];
+  if (hand.length > 10) return buildGreedyChainFrom(card, hand);
+  const budget = budgetObj || {nodes:0, max:3500};
+  function rec(cur, rest){
+    budget.nodes++;
+    if (budget.nodes > budget.max) return [cur];
+    let best = [cur];
+    for (const next of rest){
+      if (next.rank === cur.rank || next.suit === cur.suit){
+        const remainder = rest.filter(c => c !== next);
+        const candidate = [cur, ...rec(next, remainder)];
+        if (candidate.length > best.length) best = candidate;
+      }
+    }
+    return best;
+  }
+  return rec(card, hand.filter(c => c !== card));
+}
+function chainCanFinishAfter(card, hand){
+  const chain = buildLongestChainFrom(card, hand);
+  return chain.length >= hand.length;
+}
+function handFlexScore(hand){
+  if (!hand.length) return 9999;
+  let links = 0;
+  for (let i=0;i<hand.length;i++){
+    for (let j=i+1;j<hand.length;j++){
+      if (hand[i].rank === hand[j].rank || hand[i].suit === hand[j].suit) links++;
+    }
+  }
+  const suitsLeft = new Set(hand.map(c => c.suit)).size;
+  const ranksLeft = new Set(hand.map(c => c.rank)).size;
+  const specialFinishers = hand.filter(c => c.rank === 'Q' || c.rank === '6' || c.rank === '7' || (c.rank === 'K' && c.suit === 'hearts')).length;
+  return links * 22 + (4 - suitsLeft) * 4 + (9 - ranksLeft) * 2 + specialFinishers * 10;
+}
+
+function rememberPlayerDeficitBeforeDraw(){
+  const mode = Number(state.rules.drawDisabledAtPlayableCount || 2);
+  const confidence = mode === 1 ? 1.0 : 0.55;
+  const top = lastPileCard();
+  const event = {time: logTime(), top: top ? cardText(top) : '-', forcedSuit: state.forcedSuit || '-', confidence};
+  if (state.forcedSuit){
+    state.playerModel.voidSuits[state.forcedSuit] = Math.max(state.playerModel.voidSuits[state.forcedSuit] || 0, confidence);
+    event.voidSuit = state.forcedSuit;
+  } else if (top){
+    state.playerModel.voidSuits[top.suit] = Math.max(state.playerModel.voidSuits[top.suit] || 0, confidence);
+    if (top.rank !== 'Q') state.playerModel.voidRanks[top.rank] = Math.max(state.playerModel.voidRanks[top.rank] || 0, confidence);
+    event.voidSuit = top.suit;
+    event.voidRank = top.rank;
+  }
+  state.playerModel.confidenceEvents.push(event);
+  if (state.playerModel.confidenceEvents.length > 80) state.playerModel.confidenceEvents.shift();
+  dbg('player_model', 'Зафиксирован дефицит игрока перед добором', event);
+}
+function clearPlayerDeficitByPlayedCard(card){
+  if (!card) return;
+  if (state.playerModel.voidSuits[card.suit]) delete state.playerModel.voidSuits[card.suit];
+  if (state.playerModel.voidRanks[card.rank]) delete state.playerModel.voidRanks[card.rank];
+}
+function playerWeaknessScoreForCard(card){
+  let score = 0;
+  const suitWeak = state.playerModel.voidSuits[card.suit] || 0;
+  const rankWeak = state.playerModel.voidRanks[card.rank] || 0;
+  score += suitWeak * 170;
+  score += rankWeak * 135;
+  if (card.rank === 'Q') score += Math.max(...Object.values(state.playerModel.voidSuits), 0) * 60;
+  return score;
+}
+function unknownCardsForEnemyModel(){
+  const known = new Set();
+  state.enemyHand.forEach(c => known.add(cardId(c)));
+  state.pile.forEach(c => known.add(cardId(c)));
+  return allCardsList().filter(c => !known.has(cardId(c)));
+}
+function estimatePlayerCanAnswer(card){
+  const unknown = unknownCardsForEnemyModel();
+  if (!unknown.length) return 0;
+  const candidates = unknown.filter(c => c.rank === 'Q' || c.rank === card.rank || c.suit === card.suit);
+  const suitVoid = state.playerModel.voidSuits[card.suit] || 0;
+  const rankVoid = state.playerModel.voidRanks[card.rank] || 0;
+  let adjusted = 0;
+  for (const c of candidates){
+    let weight = 1;
+    if (c.suit === card.suit) weight *= (1 - suitVoid * 0.85);
+    if (c.rank === card.rank) weight *= (1 - rankVoid * 0.80);
+    adjusted += Math.max(0, weight);
+  }
+  return adjusted / unknown.length;
+}
+
+function scoreEnemyCardChoice(card) {
+  const level = state.rules.botLevel || 'normal';
+  let score = 0;
+  const special = specialEffect(card);
+  const playerHasOne = state.playerHand.length === 1;
+  const willFinishNow = state.enemyHand.length === 1;
+  const remaining = state.enemyHand.filter(c => c !== card);
+  const chain = buildLongestChainFrom(card, state.enemyHand);
+  const canFinishByChain = chain.length >= state.enemyHand.length;
+  const playerAnswerRisk = estimatePlayerCanAnswer(card);
+
+  if (level === 'easy') return Math.random() * 100;
+
+  if (special) score += special.priority || 60;
+  if (playerHasOne && special) score += 300;
+  if (willFinishNow && card.rank === 'Q') score += card.suit === 'spades' ? 420 : 300;
+  if (willFinishNow && card.rank !== 'Q') score += 160;
+
+  if (!willFinishNow && !canFinishByChain){
+    if (card.rank === 'Q') score -= card.suit === 'spades' ? 360 : 220;
+    if (card.rank === '6' || card.rank === '7' || (card.rank === 'K' && card.suit === 'hearts')) score -= (level === 'pro' ? 70 : 35);
+  }
+
+  if (level === 'normal' || level === 'smart' || level === 'pro'){
+    const sameRank = remaining.filter(c => c.rank === card.rank).length;
+    const sameSuit = remaining.filter(c => c.suit === card.suit).length;
+    score += Math.max(sameRank, sameSuit) * 24;
+    score += getCardPoints(card) * 0.12;
+  }
+
+  if (level === 'smart' || level === 'pro'){
+    if (canFinishByChain) score += 12000;
+    score += chain.length * (level === 'pro' ? 150 : 120);
+    if (state.playerHand.length <= 2 && special) score += (level === 'pro' ? 260 : 160);
+    score += handFlexScore(remaining);
+    score += playerWeaknessScoreForCard(card) * (level === 'pro' ? 1.35 : 0.45);
+    if (state.playerHand.length <= 2) {
+      score += playerWeaknessScoreForCard(card) * (level === 'pro' ? 1.25 : 0.7);
+      // Anti-finish: when the player is close to ending, prefer moves that are unlikely to be answered.
+      score -= playerAnswerRisk * (level === 'pro' ? 240 : 140);
+    } else {
+      score -= playerAnswerRisk * (level === 'pro' ? 90 : 65);
+    }
+  }
+
+  if (level === 'pro'){
+    const leavesOne = remaining.length === 1;
+    if (leavesOne){
+      const only = remaining[0];
+      const compatibleUnknown = unknownCardsForEnemyModel().filter(c => c.rank === only.rank || c.suit === only.suit || c.rank === 'Q').length;
+      score -= compatibleUnknown < 4 ? 120 : 0;
+    }
+    const beforeFlex = handFlexScore(state.enemyHand);
+    const afterFlex = handFlexScore(remaining);
+    if (afterFlex < beforeFlex - 35 && !canFinishByChain) score -= 45;
+    if (remaining.some(c => c.rank === 'Q' && c.suit === 'spades')) score += 35;
+    if (card.rank === 'Q') score += Math.max(...Object.values(state.playerModel.voidSuits), 0) * 150;
+
+    // Pro: when player is near finish, prefer cards that force draw or reduce player answer probability.
+    if (state.playerHand.length <= 2){
+      const pressureRanks101 = new Set(['6','7','A']);
+      const isHeartKing101 = card.rank === 'K' && card.suit === 'hearts';
+      const pressure101 = state.rules.gameVariant === '101' && (pressureRanks101.has(card.rank) || isHeartKing101);
+      const pressureBridge = state.rules.gameVariant === 'bridge' && (card.rank === '6' || card.rank === '7');
+      if (pressure101 || pressureBridge) score += 260;
+      if (playerAnswerRisk < 0.18) score += 180;
+      if (playerAnswerRisk > 0.55) score -= 180;
+    }
+
+    // Pro: preserve bridge cards unless they are part of a finish/pressure plan.
+    if (!canFinishByChain && state.enemyHand.length > 4){
+      const bridgeValue = (card.rank === 'Q' ? 180 : 0) + (remaining.some(c => c.rank === card.rank) ? 0 : 20);
+      score -= bridgeValue;
+    }
+  }
+  return score;
+}
+function chooseEnemyCard(playable){
+  const level = state.rules.botLevel || 'normal';
+  if (level === 'easy') return playable[Math.floor(Math.random()*playable.length)];
+  let candidates = playable;
+  if ((level === 'smart' || level === 'pro') && state.enemyHand.length > 4){
+    const finishingQueens = playable.filter(c => c.rank === 'Q' && buildLongestChainFrom(c, state.enemyHand).length >= state.enemyHand.length);
+    const nonQueens = playable.filter(c => c.rank !== 'Q');
+    if (nonQueens.length && !finishingQueens.length) candidates = nonQueens;
+  }
+  let best = candidates[0], bestScore = -Infinity, bestMeta = null;
+  for (const card of candidates) {
+    const chain = (level === 'smart' || level === 'pro') ? buildLongestChainFrom(card, state.enemyHand) : [card];
+    const score = scoreEnemyCardChoice(card);
+    if (score > bestScore) {
+      best = card;
+      bestScore = score;
+      bestMeta = {score, chain: chain.map(cardText), chainLen: chain.length, canFinish: chain.length >= state.enemyHand.length};
+    }
+  }
+  state._lastAiChoiceMeta = bestMeta;
+  return best;
+}
+async function enemyDrawUntilPlayable(){
+  let playable = getPlayableCards(state.enemyHand);
+  if (playable.length > 0) return playable;
+  while (playable.length === 0){
+    if (!ensureDeckAvailable()) break;
+    setStatus('Соперник добирает карту.', forcedSuitText() || 'Подходящего хода пока нет.');
+    render();
+    await delay(AI_DELAY_MS);
+    const d = drawOneTo(state.enemyHand);
+    if (d) {
+      logEvent('draw', `Соперник добрал ${cardText(d)}.`);
+      dbg('enemy_draw', `Соперник добрал ${cardText(d)}`);
+      autoRebuildDeckIfEmpty();
+      if (checkFourQueensRule()) return [];
+    }
+    playable = getPlayableCards(state.enemyHand);
+  }
+  return playable;
+}
+async function runEnemyTurn(){
+  if (state.roundEnded || state.turn !== 'enemy' || state.aiBusy) return;
+  state.aiBusy = true;
+
+  while (!state.roundEnded && state.turn === 'enemy'){
+    await delay(AI_DELAY_MS);
+    if (state.roundEnded || state.turn !== 'enemy') break;
+
+    const playable = await enemyDrawUntilPlayable();
+
+    if (playable.length === 0){
+      state.turn = 'player';
+      setStatus('У соперника нет хода.', ensureDeckAvailable() ? 'Ваш ход.' : 'Колоду больше восстановить нельзя.');
+      render();
+      break;
+    }
+
+    const scoredMoves = playable.map(c => ({card: cardText(c), score: scoreEnemyCardChoice(c)}));
+    const card = chooseEnemyCard(playable);
+    dbg('ai_choice', `Бот выбирает ход`, {moves: scoredMoves, chosen: cardText(card), bestChain: state._lastAiChoiceMeta ? state._lastAiChoiceMeta.chain : [], chainLen: state._lastAiChoiceMeta ? state._lastAiChoiceMeta.chainLen : 0, chainFinish: state._lastAiChoiceMeta ? state._lastAiChoiceMeta.canFinish : false});
+    const idx = state.enemyHand.findIndex(c => c === card);
+    state.enemyHand.splice(idx, 1);
+    state.pile.push(card);
+    if (state.currentRunActor === 'enemy') {
+      state.currentRunCards.push(card);
+    } else {
+      state.currentRunActor = 'enemy';
+      state.currentRunCards = [card];
+    }
+    logEvent('move', `Соперник походил ${cardText(card)}.`);
+    dbg('enemy_play', `Соперник сыграл ${cardText(card)}`);
+    setStatus(`Соперник походил ${cardText(card)}.`, forcedSuitText() || 'Разбор хода...');
+    render();
+
+    if (checkRoundEnd(card)) break;
+
+    if (card.rank === 'Q'){
+      await delay(AI_DELAY_MS);
+      const choice = chooseEnemySuit();
+      state.forcedSuit = choice;
+      state.turn = 'player';
+      setStatus(`Соперник походил ${cardText(card)} и заказал масть: ${suitInfo(choice).label}.`, forcedSuitText());
+      render();
+      break;
+    }
+
+    const specialApplied = await applySpecial(card, 'enemy');
+    if (!specialApplied){
+      state.forcedSuit = null;
+      state.turn = 'player';
+      setStatus(`Соперник походил ${cardText(card)}.`, 'Ваш ход.');
+      render();
+      break;
+    }
+  }
+
+  state.aiBusy = false;
+  render();
+}
+async function playerPlay(index){
+  if (!state.gameStarted || state.roundEnded || state.turn !== 'player' || state.pendingSuitChoice || state.aiBusy || state.playerActionBusy) return;
+  state.playerActionBusy = true;
+  try {
+  const card = state.playerHand[index];
+  const top = lastPileCard();
+  if (!canPlayOnTop(card, top, state.forcedSuit)){
+    setStatus(`Этой картой нельзя ходить: ${cardText(card)}.`, state.forcedSuit ? `Нужно ходить в масть: ${suitInfo(state.forcedSuit).label}.` : 'Ход ещё не завершён.');
+    render();
+    return;
+  }
+
+  clearPlayerDeficitByPlayedCard(card);
+  state.playerHand.splice(index, 1);
+  state.pile.push(card);
+  if (state.currentRunActor === 'player') {
+    state.currentRunCards.push(card);
+  } else {
+    state.currentRunActor = 'player';
+    state.currentRunCards = [card];
+  }
+  logEvent('move', `Игрок походил ${cardText(card)}.`);
+  dbg('player_play', `Игрок сыграл ${cardText(card)}`);
+  setStatus(`Вы походили ${cardText(card)}.`, 'Разбор вашего хода...');
+  render();
+
+  if (checkRoundEnd(card)) return;
+
+  if (card.rank === 'Q'){
+    state.pendingSuitChoice = true;
+    showPicker(true);
+    setStatus(`Вы походили ${cardText(card)}.`, 'Теперь закажите масть.');
+    render();
+    return;
+  }
+
+  const specialApplied = await applySpecial(card, 'player');
+  if (specialApplied) return;
+
+  state.forcedSuit = null;
+  autoRebuildDeckIfEmpty();
+  state.turn = 'enemy';
+  setStatus(`Вы походили ${cardText(card)}.`, 'Ход соперника.');
+  render();
+  runEnemyTurn();
+  } finally {
+    state.playerActionBusy = false;
+    render();
+  }
+}
+function playerDraw(){
+  if (!state.gameStarted || state.roundEnded || state.turn !== 'player' || state.pendingSuitChoice || state.aiBusy || state.playerActionBusy) return;
+  state.playerActionBusy = true;
+  try {
+  if (!shouldEnableDraw(state.playerHand)){
+    setStatus('Брать из колоды нельзя: достигнут порог допустимых ходов.', forcedSuitText());
+    render();
+    return;
+  }
+  if (!ensureDeckAvailable()){
+    setStatus('Колода пуста, и восстановить её нельзя.', forcedSuitText());
+    render();
+    return;
+  }
+  rememberPlayerDeficitBeforeDraw();
+  const card = drawOneTo(state.playerHand);
+  if (!card){
+    setStatus('Колода пуста.', forcedSuitText());
+  } else {
+    setStatus(`Вы взяли ${cardText(card)}.`, forcedSuitText());
+    if (checkFourQueensRule()) return;
+  }
+  render();
+  } finally {
+    state.playerActionBusy = false;
+    render();
+  }
+}
+
+
+
+
+
+function reorderPlayerCards(fromIndex, toIndex) {
+  if (fromIndex === toIndex || fromIndex == null || toIndex == null) return;
+  const item = state.playerHand.splice(fromIndex, 1)[0];
+  state.playerHand.splice(toIndex, 0, item);
+  state.dragIndex = null;
+  render();
+}
+function createCardElement(card, opts = {}){
+  const { faceUp = true, clickable = false, playable = false, clickHandler = null } = opts;
+  const div = document.createElement('div');
+  div.className = `card ${faceUp ? 'faceup' : 'back'} ${faceUp && playable ? 'playable' : ''}`;
+  if (!faceUp) return div;
+
+  const suit = suitInfo(card.suit);
+  const colorClass = suit.color;
+  const top = document.createElement('div');
+  top.className = `corner ${colorClass}`;
+  top.innerHTML = `<div class="rank">${card.rank}</div><div class="suit">${suit.symbol}</div>`;
+  const bottom = document.createElement('div');
+  bottom.className = `corner bottom ${colorClass}`;
+  bottom.innerHTML = `<div class="rank">${card.rank}</div><div class="suit">${suit.symbol}</div>`;
+  const center = document.createElement('div');
+  center.className = `center-symbol ${colorClass}`;
+  center.textContent = suit.symbol;
+  div.append(top, center, bottom);
+  if (clickable && clickHandler) div.addEventListener('click', clickHandler);
+  return div;
+}
+
+
+const DEFAULT_BUTTON_BG_CANDIDATES = (() => {
+  const items = [
+    'Pics/Buttons/button_bg.jpg','Pics/Buttons/button_bg.jpeg','Pics/Buttons/button_bg.png','Pics/Buttons/button_bg.webp',
+    'Pics/Buttons/bg.jpg','Pics/Buttons/bg.jpeg','Pics/Buttons/bg.png','Pics/Buttons/bg.webp',
+    'Pics/Buttons/buttons.jpg','Pics/Buttons/buttons.jpeg','Pics/Buttons/buttons.png','Pics/Buttons/buttons.webp'
+  ];
+  const exts = ['jpg','jpeg','png','webp'];
+  const prefixes = ['button_bg','btn','button','bg'];
+  for (const prefix of prefixes){
+    for (let i = 1; i <= 40; i++){
+      for (const ext of exts) items.push(`Pics/Buttons/${prefix}${i}.${ext}`);
+    }
+  }
+  return items;
+})();
+function probeImage(url){
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(url);
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
+async function firstExisting(candidates){
+  for (const candidate of candidates){
+    const hit = await probeImage(candidate);
+    if (hit) return hit;
+  }
+  return null;
+}
+function setButtonBackground(url){
+  document.documentElement.style.setProperty('--button-bg-image', url ? `url("${url}")` : 'none');
+}
+async function loadButtonBackground(){
+  const url = await firstExisting(DEFAULT_BUTTON_BG_CANDIDATES);
+  setButtonBackground(url);
+}
+
+function updateVariantWatermark(){
+  const wm=$('variantWatermark'); if(!wm) return;
+  const mode = state.rules.gameVariant === 'bridge' ? 'bridge' : '101';
+  wm.innerHTML = mode === 'bridge' ? '<div class="wm-bridge">BRIDGE</div>' : '<div class="wm-101-wrap"><span class="wm-line"></span><span class="wm-101">101</span><span class="wm-line"></span></div>';
+}
+function normalizeBgList(items){ return (Array.isArray(items)?items:[]).map(x=>String(x||'').trim()).filter(x=>/\.(jpe?g|png|webp)$/i.test(x)).map(x=>x.replace(/\\/g,'/')); }
+async function tryLoadManifest(url){ if (location.protocol === 'file:') return null; try{ const r=await fetch(url,{cache:'no-store'}); if(!r.ok) return null; const d=await r.json(); return normalizeBgList(d).map(name=>({name, url:name.startsWith('Pics/')?name:'Pics/'+name})); }catch(e){ return null; } }
+async function loadDefaultTableBackgrounds(){
+  let list = await tryLoadManifest('Pics/backgrounds.json');
+  if (!list || !list.length) list = Array.from({length:44},(_,i)=>({name:'bg'+(i+1)+'.jpg',url:'Pics/bg'+(i+1)+'.jpg'}));
+  state.bgFiles = list; state.bgIndex = 0; applyTableBackground();
+}
+function applyTableBackground(){ if(!state.bgFiles || !state.bgFiles.length) return; const item=state.bgFiles[state.bgIndex % state.bgFiles.length]; state.bgName=item.name; document.documentElement.style.setProperty('--page-bg-image', 'url("'+item.url+'")'); updateBgButton(); }
+function updateBgButton(){ const b=$('bgCycleBtn'); if(b) b.textContent = state.bgFiles && state.bgFiles.length ? 'BG '+(state.bgIndex+1)+'/'+state.bgFiles.length : 'BG'; }
+function cycleBg(delta=1){ if(!state.bgFiles || !state.bgFiles.length) return; state.bgIndex=(state.bgIndex+delta+state.bgFiles.length)%state.bgFiles.length; applyTableBackground(); }
+function cardId(card){ return card ? card.rank+'|'+card.suit : ''; }
+function makeCard(rank,suit){ return {rank,suit}; }
+function allCardsList(){ const out=[]; for(const s of suits) for(const r of ranks) out.push({rank:r,suit:s.key}); return out; }
+function nextChanceMode(mode){ return mode==='off'?'visible':(mode==='visible'?'hidden':'off'); }
+function chanceModeLabel(mode){ return mode==='visible'?'Chance V':(mode==='hidden'?'Chance H':'Chance'); }
+function visiblePileForDisplay(forRender=false){ if(state.showAllPile) return state.pile.slice(); return state.pile.slice(-3); }
+function updateChanceButton(){ const b=$('chanceBtn'); if(b) b.textContent = chanceModeLabel(state.chanceModeHost || 'off'); }
+function toggleChanceHost(){ state.chanceModeHost = nextChanceMode(state.chanceModeHost || 'off'); state.chancePreviewHostCard=null; state.chancePreviewHostSuit=null; render(); }
+function visibleKnownForChance(mode){ const arr=[]; const pile = mode==='hidden' ? state.pile : visiblePileForDisplay(false); pile.forEach(c=>{ if(c) arr.push(c); }); return arr; }
+function chanceBaseCard(previewCard=null){ if(previewCard && previewCard.rank!=='Q') return previewCard; if(state.pendingSuitChoice && !state.forcedSuit && state.pile.length>1) return state.pile[state.pile.length-2]; return lastPileCard(); }
+function chanceValidGroups(topCard){
+  if(!topCard) return []; const groups=[]; const seen=new Set();
+  const add=(arr,c)=>{ const id=cardId(c); if(seen.has(id)) return; seen.add(id); arr.push({...c}); };
+  const suitKey=state.forcedSuit || topCard.suit; const suit=suitInfo(suitKey); const suitCards=[];
+  for(const r of ranks){ if(r==='Q') continue; add(suitCards, makeCard(r,suitKey)); }
+  groups.push({key:'suit', label:suit?suit.label:'Масть', symbol:suit?suit.symbol:'', cards:suitCards});
+  if(!state.forcedSuit && topCard.rank!=='Q'){ const rankCards=[]; for(const s of suits){ if(s.key===topCard.suit) continue; add(rankCards, makeCard(topCard.rank,s.key)); } groups.push({key:'rank', label:topCard.rank, symbol:'', cards:rankCards}); }
+  const queens=[]; for(const s of suits) add(queens, makeCard('Q',s.key)); groups.push({key:'queen',label:'Дамы',symbol:'Q',cards:queens});
+  return groups;
+}
+function chanceUnknownFor(role,mode){ const own = role==='host'?state.playerHand:state.enemyHand; const known=new Set(); own.forEach(c=>known.add(cardId(c))); visibleKnownForChance(mode).forEach(c=>known.add(cardId(c))); const unknown=allCardsList().filter(c=>!known.has(cardId(c))); return {denom:unknown.length, unknownIds:new Set(unknown.map(cardId))}; }
+function calculateChanceSuitPreviewFor(role,mode,suitKey){
+  if(!mode || mode==='off') return {enabled:false,mode:'off',any:0,outs:0,denom:0,groups:[]};
+  const {denom,unknownIds}=chanceUnknownFor(role,mode); const suit=suitInfo(suitKey); const cards=[]; for(const r of ranks){ if(r!=='Q') cards.push(makeCard(r,suitKey)); }
+  const live=cards.filter(c=>unknownIds.has(cardId(c))); const outs=live.length; const prob=denom?Math.round(outs*100/denom):0; const groups=outs?[{key:'suit',label:suit?suit.label:'Масть',symbol:suit?suit.symbol:'',prob,outs,cards:live.map(c=>({...c,prob:denom?Math.round(100/denom):0}))}]:[];
+  return {enabled:true,mode,any:prob,outs,denom,groups};
+}
+function calculateChanceView(role,mode,previewCard=null,previewSuit=null){
+  if(!mode || mode==='off') return {enabled:false,mode:'off',any:0,outs:0,denom:0,groups:[]};
+  if(previewSuit) return calculateChanceSuitPreviewFor(role,mode,previewSuit);
+  if(!state.gameStarted || state.roundEnded || state.matchOver) return {enabled:true,mode,any:0,outs:0,denom:0,groups:[]};
+  if(mode==='hidden' && state.rules.deckMode==='flip' && state.chanceMemory.flipOrderKnown && state.deck.length){ const top=state.deck[state.deck.length-1]; return {enabled:true,mode,any:100,outs:1,denom:1,groups:[{key:'flip',label:'',symbol:'',prob:100,outs:1,cards:[{...top,prob:100}]}]}; }
+  const base=chanceBaseCard(previewCard); if(!base) return {enabled:true,mode,any:0,outs:0,denom:0,groups:[]};
+  const {denom,unknownIds}=chanceUnknownFor(role,mode); const groups=[]; const allLive=new Set();
+  for(const g of chanceValidGroups(base)){ const live=g.cards.filter(c=>unknownIds.has(cardId(c))); if(!live.length) continue; live.forEach(c=>allLive.add(cardId(c))); const prob=denom?Math.round(live.length*100/denom):0; const one=denom?Math.round(100/denom):0; groups.push({...g, prob, outs:live.length, cards:live.map(c=>({...c,prob:one}))}); }
+  const any=denom?Math.round(allLive.size*100/denom):0; return {enabled:true,mode,any,outs:allLive.size,denom,groups};
+}
+function updateChanceViews(){ state.chanceHostView = calculateChanceView('host', state.chanceModeHost||'off', state.chancePreviewHostCard, state.chancePreviewHostSuit); }
+function renderChanceCard(item){ const c=item; const s=c.suit?suitInfo(c.suit):null; const div=document.createElement('div'); div.className='chance-mini-card '+((s&&s.color)||'black')+(c.summary?' chance-summary-card':''); const label=c.summary?(c.symbol||c.label||''):(c.rank+(s?s.symbol:'')); div.innerHTML='<div class="ct">'+label+'</div><div class="cp">'+(c.prob||0)+'</div>'; return div; }
+function renderChancePanel(){ const p=$('chancePanel'); if(!p) return; const v=state.chanceHostView; if(!v || !v.enabled){ p.classList.remove('show'); p.innerHTML=''; return; } p.classList.add('show'); p.innerHTML=''; const title=document.createElement('div'); title.className='chance-title'; title.innerHTML=chanceModeLabel(v.mode)+' <span class="chance-any">Any '+(v.any||0)+'</span> <span class="chance-outs">'+(v.outs||0)+'/'+(v.denom||0)+'</span>'; p.appendChild(title); if(!v.groups || !v.groups.length){ const e=document.createElement('div'); e.className='chance-empty'; e.textContent='нет карты с шансом больше 0'; p.appendChild(e); return; } const box=document.createElement('div'); box.className='chance-groups'; for(const g of v.groups){ const row=document.createElement('div'); row.className='chance-group'; const cards=document.createElement('div'); cards.className='chance-group-cards'; cards.appendChild(renderChanceCard({summary:true,label:g.label,symbol:g.symbol,prob:g.prob,key:g.key})); g.cards.forEach(c=>cards.appendChild(renderChanceCard(c))); row.appendChild(cards); box.appendChild(row); } p.appendChild(box); }
+function showRulesPanel(){ const lines=$('rulesLines'); if(lines) lines.textContent = RULES_TEXT; const p=$('rulesPanel'); if(p) p.classList.add('show'); }
+function hideRulesPanel(){ const p=$('rulesPanel'); if(p) p.classList.remove('show'); }
+
+function renderEnemy(){
+  const row = document.getElementById('enemyRow');
+  row.innerHTML = '';
+  const playable = getPlayableCards(state.enemyHand);
+  state.enemyHand.forEach(card => {
+    const slot = document.createElement('div');
+    slot.className = 'card-slot';
+    const faceUp = state.roundEnded;
+    const el = createCardElement(card, { faceUp, playable: faceUp && state.turn === 'enemy' && playable.includes(card) });
+    slot.appendChild(el);
+    row.appendChild(slot);
+  });
+  document.getElementById('enemyCount').textContent = `${state.enemyHand.length} карт`;
+  document.getElementById('enemyCountTop').textContent = `${state.enemyHand.length} карт`;
+}
+function renderPlayer(){
+  const row = document.getElementById('playerRow');
+  row.innerHTML = '';
+  const playable = getPlayableCards(state.playerHand);
+  state.playerHand.forEach((card, index) => {
+    const slot = document.createElement('div');
+    slot.className = 'card-slot';
+    slot.dataset.index = index;
+    slot.addEventListener('dragover', (e) => e.preventDefault());
+    slot.addEventListener('drop', (e) => { e.preventDefault(); reorderPlayerCards(state.dragIndex, index); });
+
+    const isPlayable = state.turn === 'player' && !state.pendingSuitChoice && !state.roundEnded && !state.aiBusy && playable.includes(card);
+    const el = createCardElement(card, {
+      faceUp: true,
+      clickable: true,
+      playable: isPlayable,
+      clickHandler: () => playerPlay(index)
+    });
+    if (isPlayable){
+      el.addEventListener('mouseenter', () => { state.chancePreviewHostCard = {...card}; state.chancePreviewHostSuit = null; updateChanceViews(); renderChancePanel(); });
+      el.addEventListener('mouseleave', () => { state.chancePreviewHostCard = null; state.chancePreviewHostSuit = null; updateChanceViews(); renderChancePanel(); });
+    }
+    el.setAttribute('draggable', 'true');
+    el.addEventListener('dragstart', () => { state.dragIndex = index; el.classList.add('dragging'); });
+    el.addEventListener('dragend', () => { state.dragIndex = null; el.classList.remove('dragging'); });
+    slot.appendChild(el);
+    row.appendChild(slot);
+  });
+  document.getElementById('playerCount').textContent = `${state.playerHand.length} карт`;
+  document.getElementById('playerCountTop').textContent = `${state.playerHand.length} карт`;
+}
+function renderDeck(){
+  const deckStack = document.getElementById('deckStack');
+  deckStack.innerHTML = '';
+  if (state.deck.length === 0){
+    deckStack.textContent = 'Колода пуста';
+    deckStack.style.width = 'auto';
+    deckStack.style.height = 'auto';
+  } else {
+    deckStack.style.width = 'calc(var(--card-w) + 18px)';
+    deckStack.style.height = 'calc(var(--card-h) + 18px)';
+    const visible = Math.min(state.deck.length, 8);
+    for (let i = visible - 1; i >= 0; i--){
+      const el = createCardElement(null, { faceUp: false });
+      el.style.position = 'absolute';
+      el.style.top = `${i * 2}px`;
+      el.style.left = `${i * 2}px`;
+      deckStack.appendChild(el);
+    }
+  }
+  document.getElementById('deckCount').textContent = `В колоде: ${state.deck.length}`;
+}
+function renderPile(){
+  const pile = document.getElementById('pileStack');
+  pile.innerHTML = '';
+  const visible = state.currentRunCards.length > 3 ? state.currentRunCards : state.pile.slice(-3);
+  const gap = visible.length > 14 ? 16 : visible.length > 10 ? 18 : visible.length > 6 ? 22 : 34;
+  pile.style.width = `${Math.max(330, 86 + Math.max(0, visible.length - 1) * gap)}px`;
+  pile.style.height = '165px';
+  visible.forEach((card, idx) => {
+    const el = createCardElement(card, { faceUp: true });
+    el.style.transform = `translate(${idx * gap}px, ${idx * 1.5}px) scale(0.9)`;
+    pile.appendChild(el);
+  });
+}
+function renderControls(){
+  document.getElementById('drawBtn').disabled = !(
+    state.gameStarted && !state.roundEnded && state.turn === 'player' &&
+    shouldEnableDraw(state.playerHand) && !state.pendingSuitChoice && !state.aiBusy && !state.playerActionBusy
+  );
+  document.getElementById('nextSetBtn').disabled = state.matchOver;
+  const logBtn = document.getElementById('toggleLogBtn');
+  if (logBtn) logBtn.textContent = state.loggingEnabled ? 'LOG ON' : 'LOG OFF';
+  const debugBtn = document.getElementById('toggleDebugBtn');
+  if (debugBtn) debugBtn.textContent = state.debugEnabled ? 'DEBUG ON' : 'DEBUG OFF';
+}
+function renderScores(){
+  document.getElementById('playerTotalValue').textContent = state.scores.player;
+  document.getElementById('enemyTotalValue').textContent = state.scores.enemy;
+  document.getElementById('playerRoundValue').textContent = state.lastRoundPoints.player === null ? '—' : state.lastRoundPoints.player;
+  document.getElementById('enemyRoundValue').textContent = state.lastRoundPoints.enemy === null ? '—' : state.lastRoundPoints.enemy;
+  const pt = document.getElementById('playerTurnValue'); if (pt) pt.textContent = state.turn === 'player' ? 'да' : 'нет';
+  const et = document.getElementById('enemyTurnValue'); if (et) et.textContent = state.turn === 'enemy' ? 'да' : 'нет';
+}
+function showPicker(show){ document.getElementById('pickerInline').classList.toggle('show', show); }
+function showRoundEnd(title, lines){
+  document.getElementById('roundEndTitle').textContent = title;
+  document.getElementById('roundEndLines').textContent = lines;
+  document.getElementById('roundEndBox').classList.add('show');
+}
+function hideRoundEnd(){ document.getElementById('roundEndBox').classList.remove('show'); }
+function render(){ updateVariantWatermark(); updateChanceViews(); renderEnemy(); renderPlayer(); renderDeck(); renderPile(); renderControls(); renderScores(); updateBgButton(); updateChanceButton(); renderChancePanel(); }
+
+document.getElementById('nextSetBtn').addEventListener('click', () => startSet(false));
+document.getElementById('newGameBtn').addEventListener('click', () => startSet(true));
+document.getElementById('drawBtn').addEventListener('click', playerDraw);
+document.getElementById('closeRoundEndBtn').addEventListener('click', hideRoundEnd);
+document.getElementById('toggleLogBtn').addEventListener('click', toggleLogging);
+document.getElementById('toggleDebugBtn').addEventListener('click', toggleDebug);
+document.getElementById('connectFolderBtn').addEventListener('click', chooseLogFolder);
+document.getElementById('historyBtn').addEventListener('click', showHistory);
+document.getElementById('closeHistoryBtn').addEventListener('click', hideHistory);
+document.getElementById('rulesBtn').addEventListener('click', showRulesPanel);
+document.getElementById('closeRulesBtn').addEventListener('click', hideRulesPanel);
+document.getElementById('bgCycleBtn').addEventListener('click', () => cycleBg(1));
+document.getElementById('chanceBtn').addEventListener('click', toggleChanceHost);
+document.addEventListener('keydown', e => { if(e.key==='ArrowLeft') cycleBg(-1); });
+document.querySelectorAll('#pickerInline button').forEach(btn => {
+  btn.addEventListener('mouseenter', () => { state.chancePreviewHostSuit = btn.dataset.suit; updateChanceViews(); renderChancePanel(); });
+  btn.addEventListener('mouseleave', () => { state.chancePreviewHostSuit = null; updateChanceViews(); renderChancePanel(); });
+  btn.addEventListener('click', () => {
+    if (!state.pendingSuitChoice || state.roundEnded || state.aiBusy) return;
+    state.forcedSuit = btn.dataset.suit;
+    state.pendingSuitChoice = false;
+    state.chancePreviewHostSuit = null;
+    showPicker(false);
+    state.turn = 'enemy';
+    setStatus(`Вы заказали масть: ${suitInfo(state.forcedSuit).label}.`, forcedSuitText());
+    render();
+    runEnemyTurn();
+  });
+});
+loadDefaultTableBackgrounds();
+loadButtonBackground();
+render();
+</script>
+</body>
+</html>
